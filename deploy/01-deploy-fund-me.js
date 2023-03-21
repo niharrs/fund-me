@@ -3,6 +3,8 @@ const {
   networkConfig,
 } = require("../helper-hardhat-config");
 const { network } = require("hardhat");
+const { verify } = require("../utils/verify");
+require("dotenv").config();
 
 module.exports.default = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log, get } = deployments;
@@ -22,9 +24,17 @@ module.exports.default = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     args: [ethUsdPriceFeedAddress],
     log: true,
+    waitConfirmations: network.config.blockConfirmations || 6,
   });
 
   log(`Contract deployed at ${fundMe.address}`);
+
+  if (
+    !developmentChains.includes(network.name) &&
+    process.env.ETHERSCAN_API_KEY
+  ) {
+    await verify(fundMe.address, [ethUsdPriceFeedAddress]);
+  }
 };
 
 module.exports.tags = ["all", "fundme"];
