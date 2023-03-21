@@ -6,7 +6,7 @@ const { network } = require("hardhat");
 const { verify } = require("../utils/verify");
 require("dotenv").config();
 
-module.exports.default = async ({ getNamedAccounts, deployments }) => {
+module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log, get } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = network.config.chainId;
@@ -24,7 +24,7 @@ module.exports.default = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     args: [ethUsdPriceFeedAddress],
     log: true,
-    waitConfirmations: network.config.blockConfirmations || 6,
+    // waitConfirmations: network.config.blockConfirmations || 6,
   });
 
   log(`Contract deployed at ${fundMe.address}`);
